@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.rtstore.domain.User;
+import com.rtstore.exception.RegisterException;
 import com.rtstore.service.UserService;
 import com.rtstore.utils.ActiveCodeUtils;
 
@@ -56,7 +57,17 @@ public class RegisterServlet extends HttpServlet {
 		}
 		
 		//调用service完成注册操作
-		UserService service = new UserService(user);
+		UserService service = new UserService();
+		
+		try {
+			service.register(user);
+		} catch (RegisterException e) {
+			e.printStackTrace();
+			response.getWriter().write(e.getMessage());
+			return;
+		}
+		//注册成功
+		response.sendRedirect(request.getContextPath()+"/client/registersuccess.jsp");
 		
 	}
 
